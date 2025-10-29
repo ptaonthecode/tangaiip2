@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Một câu hỏi...</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Áp dụng font Inter làm font chữ mặc định */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Đảm bảo nút "Không" có hiệu ứng chuyển động mượt mà */
+        #noBtn {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-pink-100 flex items-center justify-center min-h-screen">
+
+    <main class="w-full max-w-md p-8 bg-white rounded-lg shadow-xl text-center">
+
+        <!-- 1. Vùng chứa câu hỏi (Ban đầu hiển thị) -->
+        <!-- Thẻ chứa này phải là 'relative' để nút 'absolute' bên trong hoạt động đúng -->
+        <div id="questionContainer" class="relative h-48">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">
+                Làm người yêu anh nhé? 💖
+            </h1>
+            
+            <div class="flex justify-center gap-4">
+                <!-- Nút "Có" -->
+                <button id="yesBtn" class="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-colors">
+                    không!
+                </button>
+                
+                <!-- Nút "Không" (định vị tuyệt đối) -->
+                <button id="noBtn" class="absolute px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600" style="left: 60%; top: 60%;">
+                    dạ
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. Vùng chứa Trình tải (Ban đầu bị ẩn) -->
+        <div id="heartLoader" class="hidden flex-col items-center justify-center">
+            <!-- Biểu tượng quay tròn -->
+            <div class="w-16 h-16 border-4 border-dashed border-pink-500 rounded-full animate-spin"></div>
+            <p class="text-gray-600 mt-4">Đang xử lý tình yêu...</p>
+        </div>
+
+        <!-- 3. Vùng chứa Kết quả (Ban đầu bị ẩn) -->
+        <div id="resultContainer" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-pink-600 mb-4">
+                Yayy! anh biet mà ! 🎉
+            </h2>
+            <!-- 
+                Bạn có thể thay thế 'src' bên dưới bằng URL GIF thật
+                ví dụ: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjEx.../giphy.gif" 
+            -->
+            <img id="gifResult" 
+                 src="https://placehold.co/300x300/fecaca/db2777?text=Yayy!%0A%3C3" 
+                 alt="Ăn mừng" 
+                 class="w-full max-w-xs mx-auto rounded-lg shadow-lg">
+        </div>
+
+    </main>
+
+    <script>
+        // Lấy các phần tử DOM
+        const questionContainer = document.getElementById('questionContainer');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const heartLoader = document.getElementById('heartLoader');
+        const resultContainer = document.getElementById('resultContainer');
+        // Không cần lấy gifResult vì chúng ta không gọi .play() trên <img>
+        // Trình duyệt tự động phát GIF.
+
+        // Sự kiện khi nhấp vào nút "Có"
+        yesBtn.addEventListener("click", () => {
+            // Ẩn câu hỏi và hiển thị trình tải
+            questionContainer.style.display = "none";
+            // Sử dụng 'flex' vì chúng ta đã thiết kế nó với flexbox
+            heartLoader.style.display = "flex"; 
+
+            // Đặt thời gian chờ 3 giây (3000 mili giây)
+            const timeoutId = setTimeout(() => {
+                // Ẩn trình tải và hiển thị kết quả
+                heartLoader.style.display = "none";
+                resultContainer.style.display = "block";
+            }, 3000);
+        });
+
+        // Sự kiện khi di chuột qua nút "Không"
+        // --- TỐI ƯU HÓA: Chuyển logic ra hàm riêng ---
+        const moveNoButton = () => {
+            // Lấy kích thước của vùng chứa
+            const containerWidth = questionContainer.offsetWidth;
+            const containerHeight = questionContainer.offsetHeight;
+            
+            // Lấy kích thước của chính nút "Không"
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // Tính toán vị trí ngẫu nhiên mới
+            // Trừ đi kích thước của nút để nó không bao giờ chạy ra ngoài lề
+            const newX = Math.floor(Math.random() * (containerWidth - btnWidth));
+            const newY = Math.floor(Math.random() * (containerHeight - btnHeight));
+
+            // Áp dụng vị trí mới cho nút
+            noBtn.style.left = `${newX}px`;
+            noBtn.style.top = `${newY}px`;
+        };
+
+        // --- Gắn sự kiện cho cả máy tính và di động ---
+
+        // Dành cho máy tính (di chuột)
+        noBtn.addEventListener("mouseover", moveNoButton);
+
+        // Dành cho di động (chạm vào)
+        noBtn.addEventListener("touchstart", (e) => {
+            // Ngăn hành vi mặc định của trình duyệt (như cuộn trang khi chạm)
+            e.preventDefault();
+            moveNoButton();
+        });
+    </script>
+
+</body>
+</html>
+
